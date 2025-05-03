@@ -1,10 +1,12 @@
 # users/views.py
+from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework import generics, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import authenticate
+from rest_framework.permissions import AllowAny
 
 from .models import User
 from .serializers import RegisterSerializer, LoginSerializer
@@ -13,6 +15,7 @@ from .serializers import RegisterSerializer, LoginSerializer
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all() 
     serializer_class = RegisterSerializer
+    permission_classes = [AllowAny]  # ✅ 이거 한 줄이면 끝
     
 # 로그인
 class LoginView(APIView):
@@ -21,10 +24,11 @@ class LoginView(APIView):
         serializer.is_valid(raise_exception=True)
 
         user = serializer.validated_data['user']
-        token, created = Token.objects.get_or_create(user=user)
+        refresh = RefreshToken.for_user(user)
 
         return Response({
-            'token': token.key,
+            'refresh': str(refresh),
+            'access': str(refresh.access_token),
             'user_id': user.id,
             'username': user.username,
             'nickname': user.nickname,

@@ -3,11 +3,16 @@ from rest_framework import serializers
 from .models import Diary
 
 class DiarySerializer(serializers.ModelSerializer):
+    title = serializers.SerializerMethodField()  
+
     class Meta:
         model = Diary
-        fields = ['date', 'lunar_date', 'content', 'weather']
-        read_only_fields = ['lunar_date']
-
+        fields = ['id', 'date', 'lunar_date', 'content', 'weather', 'title']
+        read_only_fields = ['lunar_date', 'title']
+        
+    def get_title(self, obj):
+        return f"{obj.date.year}년 {obj.date.month}월 {obj.date.day}일의 일기입니다."
+    
     def create(self, validated_data):
         date = validated_data.get('date')
         lunar_date = self.get_lunar_date(date)

@@ -5,6 +5,7 @@ from openpyxl import Workbook
 from rest_framework import generics, permissions
 from .models import Diary
 from .serializers import DiarySerializer
+from datetime import datetime
 
 # POST, 다이어리 작성
 class DiaryCreateView(generics.CreateAPIView):
@@ -53,6 +54,18 @@ class DiaryExportExcelView(APIView):
         user = request.user
         diaries = Diary.objects.filter(user=user).order_by('-date')
 
+        start_date = request.query_params.get('start_date')
+        end_date = request.query_params.get('end_date')
+
+        if start_date and end_date:
+            try:
+                # 문자열 -> datetime.date 변환
+                start_date = datetime.strptime(start_date, "%Y-%m-%d").date()
+                end_date = datetime.strptime(end_date, "%Y-%m-%d").date()
+                diaries = diaries.filter(date__range=[start_date, end_date])
+            except ValueError:
+                return Response({"error": "날짜 형식이 잘못되었습니다. YYYY-MM-DD 형식으로 보내주세요."}, status=400)
+
         wb = Workbook()
         ws = wb.active
         ws.title = "Diaries"
@@ -70,10 +83,13 @@ class DiaryExportExcelView(APIView):
             ])
 
         # 엑셀 파일 응답
+        today_str = datetime.now().strftime("%y%m%d")  # 예: 240429
+        filename = f"logs_{today_str}.xlsx"
+        
         response = HttpResponse(
             content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         )
-        response['Content-Disposition'] = 'attachment; filename=diary_export.xlsx'
+        response['Content-Disposition'] = f'attachment; filename={filename}'
         wb.save(response)
 
         return response
