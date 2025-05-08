@@ -11,8 +11,9 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 from decouple import config
 from pathlib import Path
-from datetime import timedelta  # 맨 위에 이거도 꼭 있어야 함
+from datetime import timedelta  
 
+WEATHER_API_KEY = config('WEATHER_API_KEY')
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -45,6 +46,7 @@ INSTALLED_APPS = [
     "rest_framework.authtoken",
     "diary",
     "corsheaders",
+    "dashboard",
 ]
 
 MIDDLEWARE = [

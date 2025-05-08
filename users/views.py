@@ -15,7 +15,7 @@ from .serializers import RegisterSerializer, LoginSerializer
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all() 
     serializer_class = RegisterSerializer
-    permission_classes = [AllowAny]  # ✅ 이거 한 줄이면 끝
+    permission_classes = [AllowAny] 
     
 # 로그인
 class LoginView(APIView):
