@@ -25,8 +25,13 @@ class DiaryListView(generics.ListAPIView):
         # 쿼리파라미터 받기
         start_date = self.request.query_params.get('start_date')
         end_date = self.request.query_params.get('end_date')
+        search_date = self.request.query_params.get('search_date') 
         keyword = self.request.query_params.get('keyword')
-
+        
+        #하루만 필터링
+        if search_date:
+            queryset = queryset.filter(date=search_date)
+            
         # 날짜 필터링
         if start_date and end_date:
             queryset = queryset.filter(date__range=[start_date, end_date])
