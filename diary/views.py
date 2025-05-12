@@ -6,7 +6,14 @@ from rest_framework import generics, permissions
 from .models import Diary
 from .serializers import DiarySerializer
 from datetime import datetime
+from rest_framework.pagination import PageNumberPagination 
 
+# 페이지네이션 클래스 정의
+class DiaryPagination(PageNumberPagination):
+    page_size = 10
+    page_size_query_param = 'page_size'
+    max_page_size = 100
+    
 # POST, 다이어리 작성
 class DiaryCreateView(generics.CreateAPIView):
     queryset = Diary.objects.all()
@@ -17,6 +24,7 @@ class DiaryCreateView(generics.CreateAPIView):
 class DiaryListView(generics.ListAPIView):
     serializer_class = DiarySerializer
     permission_classes = [permissions.IsAuthenticated]
+    pagination_class = DiaryPagination
 
     def get_queryset(self):
         user = self.request.user
