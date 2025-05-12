@@ -16,16 +16,20 @@ BASE_URL = "http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0"
 def get_base_datetime():
     """단기예보용 base_date, base_time 생성"""
     now = datetime.datetime.now()
-    base_date = now.strftime('%Y%m%d')
-
     hour = now.hour
-    # 단기예보는 02, 05, 08, 11, 14, 17, 20, 23 중 가장 최근 시간 사용
     base_times = [2, 5, 8, 11, 14, 17, 20, 23]
-    closest_time = max([t for t in base_times if t <= hour])
+
+    candidate_times = [t for t in base_times if t <= hour]
+    if candidate_times:
+        closest_time = max(candidate_times)
+        base_date = now.strftime('%Y%m%d')
+    else:
+        # 새벽 0~1시면 어제 날짜로 잡고 마지막 시간(23시) 사용
+        closest_time = base_times[-1]
+        base_date = (now - datetime.timedelta(days=1)).strftime('%Y%m%d')
+
     base_time = f"{closest_time:02d}00"
-
     return base_date, base_time
-
 
 def get_current_base_datetime():
     """초단기실황용 base_date, base_time 생성"""
