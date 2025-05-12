@@ -53,3 +53,20 @@ class LoginSerializer(serializers.Serializer):
             raise serializers.ValidationError("아이디와 비밀번호 모두 입력해야 합니다.")
 
         return attrs
+    
+    
+# 회원 정보 수정
+        
+class UserSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True, required=False)
+
+    class Meta:
+        model = User
+        fields = ('username', 'nickname', 'password')
+        read_only_fields = ('username',)# 아이디는 수정 못 하게
+
+    def update(self, instance, validated_data):
+        password = validated_data.pop('password', None)
+        if password:
+            instance.set_password(password)  # 비번은 set_password로 해싱해줘야 함
+        return super().update(instance, validated_data)
