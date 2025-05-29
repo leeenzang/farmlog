@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 import os
+import sys
 import dj_database_url
 import django_heroku
 
@@ -21,6 +22,24 @@ WEATHER_API_KEY = config('WEATHER_API_KEY')
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# 테스트 실행 여부 감지 (가장 정확하게!)
+IS_TESTING = len(sys.argv) > 1 and sys.argv[1] == 'test'
+
+if IS_TESTING:
+    print("🧪 Running in TEST")
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'test_db.sqlite3',
+        }
+    }
+else:
+    print("🌐 Running in NORMAL mode with PostgreSQL!")
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=os.environ.get('DATABASE_URL')
+        )
+    }
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -86,11 +105,6 @@ WSGI_APPLICATION = "config.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
-    'default': dj_database_url.config(
-        default=os.environ.get('DATABASE_URL')
-    )
-}
 
 
 # Password validation
@@ -157,7 +171,7 @@ SIMPLE_JWT = {
 }
 
 # Heroku용 설정 추가
-django_heroku.settings(locals())
+django_heroku.settings(locals(), databases=False)
 
 # 정적 파일 처리 (whitenoise)
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
