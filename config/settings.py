@@ -42,10 +42,7 @@ else:
     }
 
 
-# Heroku 설정은 테스트 아닐 때만!
-if not IS_TESTING:
-    import django_heroku
-    django_heroku.settings(locals(), databases=False)
+
 
 
 # Quick-start development settings - unsuitable for production
@@ -180,3 +177,8 @@ SIMPLE_JWT = {
 # 정적 파일 처리 (whitenoise)
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# Heroku 설정은 테스트 아닐 때만!
+if not IS_TESTING:
+    import django_heroku
+    django_heroku.settings(locals(), databases=False)
