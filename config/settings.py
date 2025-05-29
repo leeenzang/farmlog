@@ -22,7 +22,7 @@ WEATHER_API_KEY = config('WEATHER_API_KEY')
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# 테스트 실행 여부 감지 (가장 정확하게!)
+# 테스트 실행 여부 감지 
 IS_TESTING = len(sys.argv) > 1 and sys.argv[1] == 'test'
 
 if IS_TESTING:
@@ -40,6 +40,13 @@ else:
             default=os.environ.get('DATABASE_URL')
         )
     }
+
+
+# Heroku 설정은 테스트 아닐 때만!
+if not IS_TESTING:
+    import django_heroku
+    django_heroku.settings(locals(), databases=False)
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
