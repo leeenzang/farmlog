@@ -11,10 +11,10 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-        WEATHER_API_KEY: ${{ secrets.WEATHER_API_KEY }}
-        DATABASE_URL: ${{ secrets.DATABASE_URL }}
-        SECRET_KEY: ${{ secrets.SECRET_KEY }}
-        
+      WEATHER_API_KEY: ${{ secrets.WEATHER_API_KEY }}
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      SECRET_KEY: ${{ secrets.SECRET_KEY }}
+
     steps:
     - name: Checkout 코드
       uses: actions/checkout@v3
@@ -38,6 +38,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Checkout 코드
+      uses: actions/checkout@v3
+
+    - name: Git 초기화 및 Heroku 리모트 추가
+      run: |
+        git init
+        git remote add heroku https://git.heroku.com/farmlog-b.git
+        git config user.name "Heroku-Deploy"
+        git config user.email "you@example.com"
+
     - name: Heroku에 배포
       uses: akhileshns/heroku-deploy@v3.12.12
       with:
