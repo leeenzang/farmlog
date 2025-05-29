@@ -41,6 +41,11 @@ jobs:
     - name: Checkout 코드
       uses: actions/checkout@v3
 
+
+    - name: Heroku CLI 설치
+      run: |
+        curl https://cli-assets.heroku.com/install.sh | sh
+
     - name: Git 초기화 및 Heroku 리모트 추가
       run: |
         git init
