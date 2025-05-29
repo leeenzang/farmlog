@@ -10,6 +10,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    env:
+        WEATHER_API_KEY: ${{ secrets.WEATHER_API_KEY }}
+        DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        SECRET_KEY: ${{ secrets.SECRET_KEY }}
+        
     steps:
     - name: Checkout 코드
       uses: actions/checkout@v3
