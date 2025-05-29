@@ -177,9 +177,6 @@ SIMPLE_JWT = {
     'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
 }
 
-# Heroku용 설정 추가
-django_heroku.settings(locals(), databases=False)
-
 # 정적 파일 처리 (whitenoise)
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
